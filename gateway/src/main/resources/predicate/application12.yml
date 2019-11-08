@@ -1,0 +1,28 @@
+
+server:
+  port: 8040
+spring:
+  application:
+    #指定gateway注册到nacos上面额服务名称
+    name: gateway
+  cloud:
+    nacos:
+      discovery:
+        #指定nacos server的地址
+        server-addr: 127.0.0.1:8848
+        # 指定namespace 这个可以做到开发环境，预发环境，线上环境的隔离，同环境才可以调用
+        namespace: cede430e-9610-42ba-9a1e-11bd98ab747e
+    gateway:
+      discovery:
+        locator:
+          #让gateway自动从服务发现组件上面找到其他微服务
+          enabled: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+

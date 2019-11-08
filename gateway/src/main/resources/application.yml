@@ -1,0 +1,36 @@
+server:
+  port: 8040
+spring:
+  application:
+    name: gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        # 指定namespace 这个可以做到开发环境，预发环境，线上环境的隔离，同环境才可以调用
+        namespace: cede430e-9610-42ba-9a1e-11bd98ab747e
+    gateway:
+      discovery:
+        locator:
+          # 让gateway通过服务发现组件找到其他的微服务
+          enabled: true
+      routes:
+        - id: user_route
+          uri: lb://user-center
+          predicates:
+            - path=/users/**
+        - id: content_route
+          uri: lb://content-center
+          predicates:
+            - path=/shares/**,/admin/**
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+logging:
+  level:
+    org.springframework.cloud.gateway: trace

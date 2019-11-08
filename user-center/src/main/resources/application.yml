@@ -1,0 +1,56 @@
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/user_center?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    hikari:
+      username: root
+      password: yibo
+      # mysql6.x以上 com.mysql.cj.jdbc.Driver
+      # mysql5.x com.mysql..jdbc.Driver
+      driver-class-name: com.mysql.jdbc.Driver
+  cloud:
+    nacos:
+      discovery:
+        # 指定nacos server的地址
+        server-addr: 127.0.0.1:8848
+        # 指定namespace 这个可以做到开发环境，预发环境，线上环境的隔离，同环境才可以调用
+        namespace: cede430e-9610-42ba-9a1e-11bd98ab747e
+        # 假设用户中心部署在深圳机房
+        # 指定集群名称
+        cluster-name: shenzhen
+        metadata:
+          instance: c
+          haha: hehe
+          varsion: v1
+    stream:
+      rocketmq:
+        binder:
+          name-server: 127.0.0.1:9876
+      bindings:
+        input:
+          destination: stream-test-topic
+          #如果用的是rocketmq，则一定要设置group
+          #如果使用的是其他mq，这个group是可以不用设置的
+          group: binder-group
+        my-input:
+          destination: stream-my-topic
+          #如果用的是rocketmq，则一定要设置group
+          #如果使用的是其他mq，这个group是可以不用设置的
+          group: my-group
+
+  application:
+    # 服务名称尽量用-不要用_，更不要用特殊字符
+    name: user-center
+server:
+  port: 8081
+
+rocketmq:
+  name-server: 127.0.0.1:9876
+logging:
+  level:
+    com.alibaba.nacos: error
+jwt:
+  secret: aaaaaaabbbbbbcccccdddddaaaaaaabbbbbbcccccdddddaaaaaaabbbbbbcccccddddd
+  # 有效期，单位秒，默认2周
+  expire-time-in-second: 1209600
+

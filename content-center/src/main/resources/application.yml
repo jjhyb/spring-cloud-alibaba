@@ -1,0 +1,107 @@
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/content_center?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    hikari:
+      username: root
+      password: yibo
+      # mysql6.x以上 com.mysql.cj.jdbc.Driver
+      # mysql5.x com.mysql..jdbc.Driver
+      driver-class-name: com.mysql.jdbc.Driver
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        # 指定namespace 这个可以做到开发环境，预发环境，线上环境的隔离，同环境才可以调用
+        namespace: cede430e-9610-42ba-9a1e-11bd98ab747e
+        cluster-name: shanghai
+        metadata:
+          # 自己这个实例的版本
+          version: V1
+          # 允许调用的提供者版本
+          target-version: V1
+    sentinel:
+      filter:
+        #打开/关闭掉对Spring MVC端点的保护
+        enabled: true
+      transport:
+        #指定sentinel控制台的地址
+        dashboard: localhost:8080
+    stream:
+      rocketmq:
+        binder:
+          name-server: 127.0.0.1:9876
+      bindings:
+        output:
+          #用来指定topic
+          destination: stream-test-topic
+        my-output:
+          destination: stream-my-topic
+  application:
+    name: content-center
+  main:
+    allow-bean-definition-overriding: true
+server:
+  port: 8010
+
+
+# 通过配置文件指定user-center实例的ribbon负载均衡策略为RandomRule，和java代码方式指定效果一样
+#user-center:
+#  ribbon:
+#    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule
+ribbon:
+  eager-load:
+    # 开启ribbon饥饿加载
+    enabled: true
+    # 配置user-center使用ribbon饥饿加载，多个使用逗号分隔
+    clients: user-center
+logging:
+  level:
+    com.yibo: debug
+    #配置Feign的日志级别
+    com.yibo.contentcenter.configuration.UserCenterFeignConfiguration: debug
+    com.alibaba.nacos: error
+
+#细粒度的配置Feign的日志级别，这种是通过配置文件的方式
+#feign:
+#  client:
+#    config:
+#      #想要调用的微服务的名称
+#      user-center:
+#        loggerLevel: full
+
+#通过配置文件的方式，全局配置feign的日志输出级别
+feign:
+  sentinel:
+    #为feign整合Sentinel
+    enabled: true
+  client:
+    config:
+      #想要调用的微服务的名称
+      default:
+        loggerLevel: basic
+        requestInterceptors:
+          - com.yibo.contentcenter.feignclient.Interceptor.TokenRelayRequestInterceptor
+  httpclient:
+    #让feign使用apache httpclient做请求，而不是默认的urlconnection
+    enabled: true
+    #feign的最大连接数
+    max-connections: 200
+    #feign单个路径的最大连接数127.0.0.1:9876
+    max-connections-per-route: 50
+
+#添加sentinel依赖后 暴露/actuator/sentinel端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+resttemplate:
+  sentinel:
+    #false 关闭@SentinelRestTemplate注解，在做开发调试的时候可以关闭此注解，专注于功能的实现
+    enabled: true
+rocketmq:
+  name-server: 127.0.0.1:9876
+  producer:
+    #必须指定group
+    group: test-group
