@@ -7,7 +7,7 @@ spring:
       password: yibo
       # mysql6.x以上 com.mysql.cj.jdbc.Driver
       # mysql5.x com.mysql..jdbc.Driver
-      driver-class-name: com.mysql.jdbc.Driver
+      driver-class-name: com.mysql.cj.jdbc.Driver
   cloud:
     nacos:
       discovery:

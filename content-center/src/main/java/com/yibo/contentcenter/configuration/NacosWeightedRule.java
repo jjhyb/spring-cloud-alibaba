@@ -21,11 +21,14 @@ import org.springframework.cloud.alibaba.nacos.ribbon.NacosServer;
 @Slf4j
 public class NacosWeightedRule extends AbstractLoadBalancerRule {
 
+	/**
+     * NacosDiscoveryProperties内置了基于权重的负载均衡算法
+     */
     @Autowired
     private NacosDiscoveryProperties nacosDiscoveryProperties;
 
     /**
-     * 读取配置文件并初始化
+     * 读取配置文件并初始化NacosWeightedRule
      * @param iClientConfig
      */
     @Override
@@ -34,6 +37,10 @@ public class NacosWeightedRule extends AbstractLoadBalancerRule {
     }
 
 
+	/**
+     * 实现基于权重的负载均衡算法
+     * @param o
+     */
     @Override
     public Server choose(Object o) {
         try {
@@ -41,7 +48,6 @@ public class NacosWeightedRule extends AbstractLoadBalancerRule {
             log.info("loadBalancer={}",loadBalancer);
             //想要请求的微服务名称
             String name = loadBalancer.getName();
-            //实现基于权重的负载均衡算法
             //拿到服务发现新的相关的api
             NamingService namingService = nacosDiscoveryProperties.namingServiceInstance();
             //Nacos client自动通过基于权重的负载均衡算法，给我们选择一个实例

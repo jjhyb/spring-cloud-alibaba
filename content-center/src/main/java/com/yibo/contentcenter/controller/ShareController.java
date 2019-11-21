@@ -23,8 +23,7 @@ public class ShareController {
 
     @GetMapping("/{id}")
     @CheckLogin
-    public ShareVO findById(@PathVariable("id") Integer id,
-                            @RequestHeader("X-Token")String token){
+    public ShareVO findById(@PathVariable("id") Integer id){
         ShareVO shareVO = new ShareVO();
         ShareDTO shareDTO = shareService.findById(id);
         if(shareDTO != null){

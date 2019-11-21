@@ -15,13 +15,12 @@ public class TokenRelayRequestInterceptor implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate requestTemplate) {
-        //1、获取到token
         //1、从header里面获取token
         ServletWebRequest servletWebRequest = (ServletWebRequest)RequestContextHolder.getRequestAttributes();
         String token = servletWebRequest.getHeader("X-Token");
 
         //2、将token传递
-        if(StringUtils.isEmpty(token)){
+        if(!StringUtils.isEmpty(token)){
             requestTemplate.header("X-Token",token);
         }
 

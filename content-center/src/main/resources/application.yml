@@ -7,7 +7,7 @@ spring:
       password: yibo
       # mysql6.x以上 com.mysql.cj.jdbc.Driver
       # mysql5.x com.mysql..jdbc.Driver
-      driver-class-name: com.mysql.jdbc.Driver
+      driver-class-name: com.mysql.cj.jdbc.Driver
   cloud:
     nacos:
       discovery:
@@ -25,8 +25,44 @@ spring:
         #打开/关闭掉对Spring MVC端点的保护
         enabled: true
       transport:
+        port: 8719
         #指定sentinel控制台的地址
-        dashboard: localhost:8080
+        dashboard: localhost:8082
+      datasource:
+        # 名称随意
+        flow:
+          nacos:
+            server-addr: localhost:8848
+            dataId: ${spring.application.name}-flow-rules
+            groupId: SENTINEL_GROUP
+            # 规则类型，取值见：
+            # org.springframework.cloud.alibaba.sentinel.datasource.RuleType
+            rule-type: flow
+        degrade:
+          nacos:
+            server-addr: localhost:8848
+            dataId: ${spring.application.name}-degrade-rules
+            groupId: SENTINEL_GROUP
+            rule-type: degrade
+        system:
+          nacos:
+            server-addr: localhost:8848
+            dataId: ${spring.application.name}-system-rules
+            groupId: SENTINEL_GROUP
+            rule-type: system
+        authority:
+          nacos:
+            server-addr: localhost:8848
+            dataId: ${spring.application.name}-authority-rules
+            groupId: SENTINEL_GROUP
+            rule-type: authority
+        param-flow:
+          nacos:
+            server-addr: localhost:8848
+            dataId: ${spring.application.name}-param-flow-rules
+            groupId: SENTINEL_GROUP
+            rule-type: param-flow
+
     stream:
       rocketmq:
         binder:
